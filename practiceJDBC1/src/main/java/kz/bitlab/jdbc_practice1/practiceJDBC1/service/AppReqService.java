@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -98,10 +99,6 @@ public class AppReqService {
         return app;
     }
 
-    public boolean deleteRequest(Long id){
-        System.out.println("deleteRequest");
-        return false;
-    }
 
     public ApplicationRequest getRequestById(Long id){
         try{
@@ -119,6 +116,7 @@ public class AppReqService {
                         .handled(resultSet.getBoolean("handled"))
                         .build();
                 stmm.close();
+                resultSet.close();
                 return req;
             }else{
                 stmm.close();
@@ -133,4 +131,72 @@ public class AppReqService {
     }
 
 
+    public boolean deleteRequestById(Long id){
+        try{
+            PreparedStatement stmt = connection.prepareStatement("DELETE FROM t_application WHERE id=?;");
+            stmt.setLong(1, id);
+            stmt.executeUpdate();
+            stmt.close();
+
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public ApplicationRequest updateReqHandled(Long id, boolean handled){
+        try{
+            PreparedStatement stmt = connection.prepareStatement("UPDATE t_application SET handled=? WHERE id=?;");
+            stmt.setBoolean(1, handled);
+            stmt.setLong(2, id);
+            stmt.executeUpdate();
+            ResultSet resultSet = stmt.getGeneratedKeys();
+            if(resultSet.next()){
+                ApplicationRequest req = ApplicationRequest
+                        .builder()
+                        .id(resultSet.getLong("id"))
+                        .userName(resultSet.getString("userName"))
+                        .courseName(resultSet.getString("courseName"))
+                        .commentary(resultSet.getString("commentary"))
+                        .phone(resultSet.getString("phone"))
+                        .handled(resultSet.getBoolean("handled"))
+                        .build();
+                stmt.close();
+                resultSet.close();
+                return req;
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        return null;
+    }
+
+
+
+    public List<ApplicationRequest> getAllNewRequest(){
+        List<ApplicationRequest> list = new ArrayList<>();
+        try{
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM t_application WHERE handled=true;");
+            ResultSet resultSet = stmt.executeQuery();
+            while (resultSet.next()) {
+                ApplicationRequest req = ApplicationRequest
+                        .builder()
+                        .id(resultSet.getLong("id"))
+                        .userName(resultSet.getString("userName"))
+                        .courseName(resultSet.getString("courseName"))
+                        .commentary(resultSet.getString("commentary"))
+                        .phone(resultSet.getString("phone"))
+                        .handled(resultSet.getBoolean("handled"))
+                        .build();
+                stmt.close();
+                list.add(req);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return list;
+    }
 }
+

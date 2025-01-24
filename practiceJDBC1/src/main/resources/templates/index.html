@@ -17,7 +17,7 @@
                         <a class="nav-link" href="#">Все заявки</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Новые заявки</a>
+                        <a class="nav-link" href="new_request">Новые заявки</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Обработанные заявки</a>
@@ -32,7 +32,7 @@
 
 
         <div class="row; container" >
-            <div class="column" style="background-color:#aaa;" th:each="app : ${requests}">
+            <div class="column" style="background-color:white;" th:each="app : ${requests}">
                 <div th:if="${app.isHandled() == false}">
                     <p style="color:red">*(Новая)</p>
                 </div>
@@ -57,7 +57,7 @@
         float: left;
         width: 50%;
         padding: 90px;
-        height: 300px; /* Should be removed. Only for demonstration */
+        height: 350px; /* Should be removed. Only for demonstration */
     }
 
     /* Clear floats after the columns */

@@ -55,4 +55,34 @@ public class AppReqController {
         model.addAttribute("requests",appReqService.getRequestById(id));
         return "details";
     }
+
+    @PostMapping("/change_req")
+    public String checkHandle(@RequestParam(name = "id") Long id ,
+                              @RequestParam(name = "handled") boolean handled,Model model) {
+        if (!handled) {
+            handled = true;
+            model.addAttribute("requests",appReqService.updateReqHandled(id,handled));
+            return "redirect:/index";
+        }else{
+            return "redirect:/details?error";
+        }
+    }
+
+    @PostMapping("delete_req")
+    public String deleteReq(@RequestParam(name = "id") Long reqID) {
+        boolean status = appReqService.deleteRequestById(reqID);
+        if (status) {
+            return "redirect:/index";
+        }else{
+            return "redirect:/add-req?error";
+        }
+    }
+
+    @GetMapping("new_request")
+    public String newRequest(Model model) {
+        System.out.println(">>>>>>>>>>>>>");
+        //boolean statuc = true;
+        model.addAttribute("requests",appReqService.getAllNewRequest());
+        return "new_request";
+    }
 }
