@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+            <div>
+                <input type="hidden" th:value="${requests.getId()}">
+               <p th:text="${requests.getUserName()}"></p>
+                <p th:text="${requests.getCourseName()}"></p>
+                <p th:text="${requests.getCommentary()}"></p>
+                <p th:text="${requests.getPhone()}"></p>
+            </div>
+</body>
+</html>
