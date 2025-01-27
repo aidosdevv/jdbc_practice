@@ -15,17 +15,23 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AppReqController {
 
     private final AppReqService appReqService;
+    private final boolean isActive = false;
+    private final boolean isNotActive = true;
 
     @GetMapping(value="/index")
     public String index(Model model) {
         model.addAttribute("requests",appReqService.getAllApplicationRequest());
+        model.addAttribute("isActive", isActive);
+        model.addAttribute("isNotActive", isNotActive);
         return "index";
     }
 
 
 
     @GetMapping("/add-req")
-    public String addReq() {
+    public String addReq(Model model) {
+        model.addAttribute("isActive", isActive);
+        model.addAttribute("isNotActive", isNotActive);
         return "add-req";
     }
 
@@ -53,6 +59,8 @@ public class AppReqController {
     @GetMapping("/details")
     public String details(Model model, @RequestParam(name="id") Long id) {
         model.addAttribute("requests",appReqService.getRequestById(id));
+        model.addAttribute("isActive", isActive);
+        model.addAttribute("isNotActive", isNotActive);
         return "details";
     }
 
@@ -78,11 +86,29 @@ public class AppReqController {
         }
     }
 
-    @GetMapping("new_request")
-    public String newRequest(Model model) {
-        System.out.println(">>>>>>>>>>>>>");
-        //boolean statuc = true;
-        model.addAttribute("requests",appReqService.getAllNewRequest());
-        return "new_request";
+    @GetMapping("/new_request")
+    public String newRequest(@RequestParam boolean isActive,Model model) {
+        if(!isActive) {
+            model.addAttribute("requests", appReqService.getAllHandledRequest(isActive));
+            model.addAttribute("isActive", isActive);
+            model.addAttribute("isNotActive", isNotActive);
+            return "new_request";
+        }else{
+            return "new_request?error";
+        }
     }
+
+    @GetMapping("/processed_req")
+    public String processedRequest(@RequestParam boolean isNotActive,Model model) {
+        
+        if (isNotActive) {
+            model.addAttribute("requests", appReqService.getAllHandledRequest(isNotActive));
+            model.addAttribute("isActive", isActive);
+            model.addAttribute("isNotActive", isNotActive);
+            return "processed_req";
+        }else{
+            return "index?error2";
+        }
+    }
+
 }

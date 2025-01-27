@@ -175,10 +175,11 @@ public class AppReqService {
 
 
 
-    public List<ApplicationRequest> getAllNewRequest(){
+    public List<ApplicationRequest> getAllHandledRequest(boolean isActive){
         List<ApplicationRequest> list = new ArrayList<>();
         try{
-            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM t_application WHERE handled=true;");
+            PreparedStatement stmt = connection.prepareStatement("SELECT * FROM t_application WHERE handled=?;");
+            stmt.setBoolean(1, isActive);
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
                 ApplicationRequest req = ApplicationRequest
@@ -190,13 +191,14 @@ public class AppReqService {
                         .phone(resultSet.getString("phone"))
                         .handled(resultSet.getBoolean("handled"))
                         .build();
-                stmt.close();
                 list.add(req);
             }
+            stmt.close();
         }catch (Exception e){
             e.printStackTrace();
         }
         return list;
     }
+
 }
 

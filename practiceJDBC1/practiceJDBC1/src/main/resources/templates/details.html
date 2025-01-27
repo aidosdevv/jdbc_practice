@@ -17,10 +17,10 @@
                 <a class="nav-link" href="index">Все заявки</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Новые заявки</a>
+                <a class="nav-link" th:href="@{/new_request(isActive=${isActive})}>Новые заявки</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#">Обработанные заявки</a>
+                <a class="nav-link" th:href="@{/processed_req(isNotActive=${isNotActive})}">Обработанные заявки</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="add-req">+ Добавить заявку</a>
@@ -44,7 +44,7 @@
                     <p th:text="${requests.getCommentary()}"></p>
                     <p th:text="${requests.getPhone()}"></p>
                     <div th:if="${requests.isHandled() == false}" class="container">
-                        <form method="post" th:action="@{'/change_req'}">
+                        <form method="post" th:action="@{'/change_req?id='+${requests.id}}">
                             <input name="handled" type="hidden" th:value="${requests.isHandled()}">
 
                             <button type="submit">Обработать заявку</button>
