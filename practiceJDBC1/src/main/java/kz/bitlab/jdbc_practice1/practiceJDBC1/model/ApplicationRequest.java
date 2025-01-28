@@ -12,4 +12,5 @@ public class ApplicationRequest {
     private String commentary;
     private String phone;
     private boolean handled;
+    private Course course;
 }

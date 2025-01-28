@@ -111,4 +111,9 @@ public class AppReqController {
         }
     }
 
+    public void getActives(Model model) {
+        model.addAttribute("isActive", isActive);
+        model.addAttribute("isNotActive", isNotActive);
+    }
+
 }
