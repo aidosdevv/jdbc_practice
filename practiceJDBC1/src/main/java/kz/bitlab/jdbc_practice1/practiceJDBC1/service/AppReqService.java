@@ -22,12 +22,12 @@ public class AppReqService {
         List<ApplicationRequest> list = new ArrayList<>();
 
         try{
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT c.id AS car_id, c.brand, c.model, c.engine_volume, c.max_speed, c.manufacturer_country_id AS country_id, m.name AS country_name, m.code FROM t_cars AS c INNER JOIN t_countries AS m ON c.manufacturer_country_id = m.id;");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.id AS app_id,a.userName,a.courseName,a.commentary,a.phone,a.handled,a.course_id,c.name,c.description,c.price FROM t_application AS a INNER JOIN t_course AS c ON a.course_id = c.id;");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 ApplicationRequest app = ApplicationRequest
                                         .builder()
-                                        .id(resultSet.getLong("id"))
+                                        .id(resultSet.getLong("app_id"))
                                         .userName(resultSet.getString("userName"))
                                         .courseName(resultSet.getString("courseName"))
                                         .commentary(resultSet.getString("commentary"))
@@ -35,7 +35,7 @@ public class AppReqService {
                                         .handled(resultSet.getBoolean("handled"))
                                         .course(
                                                 Course.builder()
-                                                        .id(resultSet.getLong("courseId"))
+                                                        .id(resultSet.getLong("course_id"))
                                                         .name(resultSet.getString("name"))
                                                         .description(resultSet.getString("description"))
                                                         .price(resultSet.getInt("price"))
@@ -208,27 +208,29 @@ public class AppReqService {
     public List<ApplicationRequest> getAllHandledRequest(boolean isActive){
         List<ApplicationRequest> list = new ArrayList<>();
         try{
-            PreparedStatement stmt = connection.prepareStatement("SELECT a.id AS app_id,a.userName,a.courseName,a.commentary,a.phone,a.course_id,c.name,c.price FROM t_application AS a INNER JOIN t_course AS c ON a.course_id = c.id where a.handled=?;");
+            PreparedStatement stmt = connection.prepareStatement("SELECT a.id AS app_id,a.userName,a.courseName,a.commentary,a.phone,a.handled,a.course_id,c.name,c.description,c.price FROM t_application AS a INNER JOIN t_course AS c ON a.course_id = c.id where a.handled=?;;");
+
             stmt.setBoolean(1, isActive);
             ResultSet resultSet = stmt.executeQuery();
             while (resultSet.next()) {
-                ApplicationRequest req = ApplicationRequest
+                ApplicationRequest app = ApplicationRequest
                         .builder()
-                        .id(resultSet.getLong("id"))
+                        .id(resultSet.getLong("app_id"))
                         .userName(resultSet.getString("userName"))
                         .courseName(resultSet.getString("courseName"))
                         .commentary(resultSet.getString("commentary"))
                         .phone(resultSet.getString("phone"))
                         .handled(resultSet.getBoolean("handled"))
-                        .course(Course
-                                .builder()
-                                .id(resultSet.getLong("courseId"))
-                                .name(resultSet.getString("name"))
-                                .description(resultSet.getString("description"))
-                                .price(resultSet.getInt("price"))
-                                .build())
+                        .course(
+                                Course.builder()
+                                        .id(resultSet.getLong("course_id"))
+                                        .name(resultSet.getString("name"))
+                                        .description(resultSet.getString("description"))
+                                        .price(resultSet.getInt("price"))
+                                        .build()
+                        )
                         .build();
-                list.add(req);
+                list.add(app);
             }
             stmt.close();
         }catch (Exception e){

@@ -40,6 +40,7 @@
                 <p>Курс:<span style="margin-left: 5px;" th:text="${app.getCourseName()}"></span></p>
                 <p th:text="${app.getCommentary()}"></p>
                 <b><p>Teл:  <span style="margin-left: 3px;" th:text="${app.getPhone()}"></span></p></b>
+                <p>Цена: <span style="margin-left: 5px;" th:text="${app.course.price}"></span>$</p>
                 <a th:href="@{'/details?id='+${app.id}}" style="color:blue;text-decoration: none;margin-left: 300px;">Подробнее</a>
 
             </div>
@@ -57,7 +58,7 @@
         float: left;
         width: 50%;
         padding: 90px;
-        height: 350px; /* Should be removed. Only for demonstration */
+        height: 400px; /* Should be removed. Only for demonstration */
     }
 
     /* Clear floats after the columns */
