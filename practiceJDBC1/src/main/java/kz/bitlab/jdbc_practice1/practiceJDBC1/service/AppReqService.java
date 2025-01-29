@@ -3,14 +3,12 @@ package kz.bitlab.jdbc_practice1.practiceJDBC1.service;
 import kz.bitlab.jdbc_practice1.practiceJDBC1.model.ApplicationRequest;
 import kz.bitlab.jdbc_practice1.practiceJDBC1.model.Course;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;
 import org.springframework.stereotype.Component;
 
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,13 +17,12 @@ import java.util.List;
 public class AppReqService {
 
     private final Connection connection;
-    private final ConfigurableServletWebServerFactory configurableServletWebServerFactory;
 
     public List<ApplicationRequest> getAllApplicationRequest(){
         List<ApplicationRequest> list = new ArrayList<>();
 
         try{
-            PreparedStatement preparedStatement = connection.prepareStatement("SELECT a.id AS app_id,a.userName,a.courseName,a.commentary,a.phone,a.course_id,c.name,c.price FROM t_application AS a INNER JOIN t_course AS c ON a;");
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT c.id AS car_id, c.brand, c.model, c.engine_volume, c.max_speed, c.manufacturer_country_id AS country_id, m.name AS country_name, m.code FROM t_cars AS c INNER JOIN t_countries AS m ON c.manufacturer_country_id = m.id;");
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()){
                 ApplicationRequest app = ApplicationRequest

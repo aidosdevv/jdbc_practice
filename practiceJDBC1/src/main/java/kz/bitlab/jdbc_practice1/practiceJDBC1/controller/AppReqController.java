@@ -1,7 +1,9 @@
 package kz.bitlab.jdbc_practice1.practiceJDBC1.controller;
 
 import kz.bitlab.jdbc_practice1.practiceJDBC1.model.ApplicationRequest;
+import kz.bitlab.jdbc_practice1.practiceJDBC1.model.Course;
 import kz.bitlab.jdbc_practice1.practiceJDBC1.service.AppReqService;
+import kz.bitlab.jdbc_practice1.practiceJDBC1.service.CoursesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class AppReqController {
 
     private final AppReqService appReqService;
+    private final CoursesService coursesService;
     private final boolean isActive = false;
     private final boolean isNotActive = true;
 
@@ -30,6 +33,7 @@ public class AppReqController {
 
     @GetMapping("/add-req")
     public String addReq(Model model) {
+        model.addAttribute("courses", coursesService.getAllCourses());
         model.addAttribute("isActive", isActive);
         model.addAttribute("isNotActive", isNotActive);
         return "add-req";
@@ -39,21 +43,30 @@ public class AppReqController {
     public String save_req(@RequestParam(name = "reqName") String userName,
                            @RequestParam(name = "reqCourse") String courseName,
                            @RequestParam(name ="reqComment") String comment,
-                           @RequestParam(name ="reqPhone") String phone){
-        ApplicationRequest req = ApplicationRequest.builder()
-                .id(null)
-                .userName(userName)
-                .courseName(courseName)
-                .commentary(comment)
-                .phone(phone)
-                .handled(false)
-                .build();
-        boolean statuc = appReqService.addRequest(req);
-        if (statuc) {
-            return "redirect:/index";
-        }else {
+                           @RequestParam(name ="reqPhone") String phone,
+                           @RequestParam(name = "req_course_id") Long course_id){
+        System.out.println(course_id+">>>>>>");
+        Course course = coursesService.getCourseById(course_id);
+        if(course != null) {
+            ApplicationRequest req = ApplicationRequest.builder()
+                    .id(null)
+                    .userName(userName)
+                    .courseName(courseName)
+                    .commentary(comment)
+                    .phone(phone)
+                    .handled(false)
+                    .course(course)
+                    .build();
+            boolean statuc = appReqService.addRequest(req);
+            if (statuc) {
+                return "redirect:/index";
+            }else {
+                return "redirect:/add-req?error";
+            }
+        }else{
             return "redirect:/add-req?error";
         }
+
     }
 
     @GetMapping("/details")
